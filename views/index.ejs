@@ -1,0 +1,1378 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>
+        index
+    </title>
+    <link type="text/css" rel='stylesheet' href='/css/bootstrap.min.css' />
+    <link type="text/css" rel='stylesheet' href='/css/bootstrap-table.min.css' />
+    <link rel="icon" type="image/png" href="/img/icons/favicon.ico" />
+
+    <script type="text/javascript" src="/js/jquery.js"></script>
+    <script type="text/javascript" src="/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="/js/bootstrap-table.min.js"></script>
+    <script type="text/javascript" src="/js/bootstrap-table-en-US.min.js"></script>
+    <script type="text/javascript" src="/js/bootstrap-table-toolbar.js"></script>
+    <script type="text/javascript" src="/js/echarts.min.js"></script>
+    <script type="text/javascript" src="/js/bootstrap-editable.js"></script>
+    <script type="text/javascript" src="/js/bootstrap-table-editable.min.js"></script>
+    <script type="text/javascript" src="/js/combodate.js"></script>
+    <script type="text/javascript" src="/js/moment.js"></script>
+
+    <script type="text/javascript" src="/js/FileSaver.min.js"></script>
+    <script type="text/javascript" src="/js/xlsx.core.min.js"></script>
+    <script type="text/javascript" src="/js/tableExport.min.js"></script>
+    <script type="text/javascript" src="/js/bootstrap-table-export.min.js"></script>
+    
+
+    <script type="text/javascript" src="/js/method.js"></script>
+
+    <style>
+        .chart {
+            margin-left: 10px;
+            margin-right: 10px;
+            display: flex;
+            flex-direction: row;
+            justify-content: space-between;
+        }
+        #left {
+            flex: 1;
+            height: 400px;
+            margin-right: 5px;
+        }
+        
+        #right {
+            flex: 1;
+            height: 400px;
+            margin-left: 5px;
+        }
+
+
+        #secondleft {
+            flex: 1;
+            height: 400px;
+            margin-right: 5px;
+        }
+        
+        #secondright {
+            flex: 1;
+            height: 400px;
+            margin-left: 5px;
+        }
+
+        .out {
+            margin-left: 20px;
+            margin-right: 20px;
+            margin-bottom: 50px;
+        }
+
+        #rows {
+            color: red;
+            font-size: 20px;
+            font-weight: 900;
+        }
+
+        .test {
+            margin-top: 20px;
+            margin-left: auto;
+            margin-right: auto;
+            width: 20%;
+        }
+    </style>
+
+</head>
+
+<body>
+    <!-- Fixed navbar -->
+    <nav class="navbar navbar-inverse  navbar-fixed-top">
+        <div class="container">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar"
+                    aria-expanded="false" aria-controls="navbar">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="/">Bosch Home</a>
+            </div>
+            <div id="navbar" class="navbar-collapse collapse">
+                <!-- <ul class="nav navbar-nav">
+                    <li class="active"><a href="#">Home</a></li>
+
+                    <li><a href="#contact">Contact</a></li>
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true"
+                            aria-expanded="false">Dropdown <span class="caret"></span></a>
+                        <ul class="dropdown-menu">
+                            <li><a href="#">Action</a></li>
+                            <li><a href="#">Another action</a></li>
+
+                        </ul>
+                    </li>
+                </ul> -->
+
+                <ul class="nav navbar-nav navbar-right">
+                    <li><a href="/logout">Log out</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <p style="height: 50px"></p>
+
+    <div class="chart">
+        <div id="left"></div>
+        <div id="right"></div>
+    </div>
+
+    <div class="chart">
+        <div id="secondleft"></div>
+        <div id="secondright"></div>
+    </div>
+
+    <div class="form-group test">
+        <select class="form-control" id="year_name">
+            <option value="2024">2024</option>
+            <option value="2023">2023</option>
+            <option value="2022">2022</option>
+            <option value="2021">2021</option>
+            <option value="2020">2020</option>
+            <option value="2019">2019</option>
+            <option value="2018">2018</option>
+            <option value="2017">2017</option>
+            <option value="2016">2016</option>
+            <option value="2015">2015</option>
+        </select>
+    </div>
+
+
+    <div id="toolbar" class="btn-group">
+        <button type="button" class="btn btn-default" data-toggle="modal" data-target="#modal3">
+            <i class="glyphicon glyphicon-plus"></i>
+        </button>
+
+        
+
+        <button type="button" class="btn btn-default" onclick="getRows()">
+            <i class="glyphicon glyphicon-minus"></i>
+        </button>
+
+    </div>
+
+    <!-- 删除项目信息 -->
+    <div class="modal fade" id="deletemodal" tabindex="-1" role="dialog">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title">Delete Working Information</h4>
+                </div>
+                <div class="modal-body">
+                    <p>Are you sure to delete these working information : <span id="rows"></span>?</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-danger" id="del" onclick="deleteWorkingInformation()">delete</button>
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+    </div><!-- /.modal -->
+
+
+
+    <!--新增项目信息-->
+    <div class="modal fade" id="modal3" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                    <h4 class="modal-title">Add New Working Information</h4>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label>Project</label>
+                        <select class="form-control" id="pj_id"></select>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Role</label>
+                        <select class="form-control" id="role_id"></select>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Year</label>
+                        <select class="form-control" id="year_name_modal">
+                            <option value=""></option>
+                            <option value="2024">2024</option>
+                            <option value="2023">2023</option>
+                            <option value="2022">2022</option>
+                            <option value="2021">2021</option>
+                            <option value="2020">2020</option>
+                            <option value="2019">2019</option>
+                            <option value="2018">2018</option>
+                            <option value="2017">2017</option>
+                            <option value="2016">2016</option>
+                            <option value="2015">2015</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Month</label>
+                        <select class="form-control" id="month_name">
+                            <option value=""></option>
+                            <option value="January">January</option>
+                            <option value="February">February</option>
+                            <option value="March">March</option>
+                            <option value="April">April</option>
+                            <option value="May">May</option>
+                            <option value="June">June</option>
+                            <option value="July">July</option>
+                            <option value="August">August</option>
+                            <option value="September">September</option>
+                            <option value="October">October</option>
+                            <option value="November">November</option>
+                            <option value="December">December</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Working Hour</label>
+                        <input type="text" class="form-control" id="hour_time">
+                    </div>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary" id="submit" onclick="addNewWorkingInformation()">Submit</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="modal fade" id="failure" tabindex="-1" role="dialog">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title">Failure</h4>
+                </div>
+                <div class="modal-body">
+                    <p>Add new working information failure.Please try it again.</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+    </div><!-- /.modal -->
+
+    <div class="out">
+        <table id="table" data-editable-emptytext="--" data-show-fullscreen="true"></table>
+    </div>
+
+    <div class="panel panel-success out">
+        <div class="panel-heading">
+            <h3 class="panel-title" style="font-size: 2rem">function instruction</h3>
+        </div>
+        <div class="panel-body">
+            <ul>
+                <li style="font-size: 18px">This web page is used to manage your own working hours.</li>
+                <li style="font-size: 18px"><span style="color:#428bca; font-size: 20px;">Bar:</span><span style="color: #30b524"> It will show you the working hours of different projects for every month.</span></li>
+                <li style="font-size: 18px"><span style="color:#428bca; font-size: 20px;">Pie1: </span><span style="color: #30b524">It will show you the time percent of every project in a specific year.</span></li>
+                <li style="font-size: 18px"><span style="color:#428bca; font-size: 20px;">Bar2: </span><span style="color: #30b524">It will show you the standard working hours, actual working hours and the gap working hours.</span></li>
+                <li style="font-size: 18px"><span style="color:#428bca; font-size: 20px;">Pie2: </span><span style="color: #30b524">It will show you the time percent of every role in a specific year.</span></li>
+                <li style="font-size: 22px; color: red;">If you delete Private leave\Training\Administration or edit their role, it will not work. Dont't worry.</li>
+                
+            </ul>
+        </div>
+    </div>
+
+
+
+</body>
+<script>
+
+    var $table = $('#table');
+
+    function getRows() {
+        const rows = $table.bootstrapTable("getSelections");
+        if (rows.length == 0) {
+            window.alert("No row is selected!");
+        }
+        else {
+            var info = "";
+            var isDeleteIllegal = 1;
+            for (let i = 0; i < rows.length; i++) {
+                if (rows[i].pj_name == "Private leave" || rows[i].pj_name == "Training" || rows[i].pj_name == "Administration") {
+                    isDeleteIllegal = 0;
+                    break;
+                }
+                else {
+                    if (i != rows.length - 1) {
+                        info += getPjnameRolenameMonthnamehourtime(rows[i]) + " , ";
+                    } else {
+                        info += getPjnameRolenameMonthnamehourtime(rows[i]);
+                    }
+                }
+            }
+            if (isDeleteIllegal == 0) {
+                window.alert("Private leave or Training or Administration cannot be deleted.");
+            }
+            else {
+                $("#rows").html(info);
+                $("#deletemodal").modal("show");
+            }
+        }
+    }
+
+    function resetModal() {
+        $("#pj_id").val("");
+        $("#role_id").val("");
+        $("#month_name").val("");
+        $("#hour_time").val("");
+    }
+
+    var leftChart;
+    var rightChart;
+    var secondLeftChart;
+    var secondRightChart;
+
+    var projects = [];
+
+    // 重置图表
+    function refreshCharts() {
+        // 清空图表缓存
+        clearChartsCache();
+        // 重新获得图表数据
+        initCharts();
+    }
+
+    // 清空图表缓存
+    function clearChartsCache() {
+        leftChart.clear();
+        rightChart.clear();
+        secondLeftChart.clear();
+        secondRightChart.clear();
+    }
+
+    // 显示左边柱状图
+    function formatLeftChartsData(data) {
+        const length = data.length;
+        const proset = new Set();
+        var xAxisData = Array(12).fill("");
+        for (let i = 0; i < length; i++) {
+            proset.add(data[i].pj_name);
+
+            switch (data[i].month_name) {
+                case "January":
+                    xAxisData[0] = "January";
+                    break;
+                case "February":
+                    xAxisData[1] = "February";
+                    break;
+                case "March":
+                    xAxisData[2] = "March";
+                    break;
+                case "April":
+                    xAxisData[3] = "April";
+                    break;
+                case "May":
+                    xAxisData[4] = "May";
+                    break;
+                case "June":
+                    xAxisData[5] = "June";
+                    break;
+                case "July":
+                    xAxisData[6] = "July";
+                    break;
+                case "August":
+                    xAxisData[7] = "August";
+                    break;
+                case "September":
+                    xAxisData[8] = "September";
+                    break;
+                case "October":
+                    xAxisData[9] = "October";
+                    break;
+                case "November":
+                    xAxisData[10] = "November";
+                    break;
+                case "December":
+                    xAxisData[11] = "December";
+                    break;
+            }
+        }
+
+        xAxisData = xAxisData.filter((value) => {
+            return value != ""
+        });
+
+        projects = Array.from(proset);
+
+
+        const xAxisDataLength = xAxisData.length;
+        // series 个数
+        const projectsLength = projects.length;
+
+        var dataArray = initDataArray(projectsLength);
+        for (let i = 0; i < xAxisDataLength; i++) {
+            for (let j = 0; j < projectsLength; j++) {
+                // 查找某个项目某个月份对应的工时
+                pushDataArray(dataArray[j], projects[j], xAxisData[i], data);
+            }
+        }
+        var series = [];
+        initSeries(series, projects, dataArray);
+
+        const option = {
+            title: {
+                text: "Bar",
+                x: "left"
+            },
+            legend: {
+                data: projects,
+                align: 'left'
+            },
+            toolbox: {
+                show: true,
+
+                feature: {
+
+                    saveAsImage: {
+                        show: true,
+                        title: "save as image"
+                    }
+                }
+            },
+
+            tooltip: {},
+            xAxis: {
+                data: xAxisData,
+                name: 'Month',
+                silent: false,
+                axisLine: {
+                    onZero: true
+                },
+                splitLine: {
+                    show: false
+                },
+                splitArea: {
+                    show: false
+                }
+            },
+            yAxis: {
+                splitArea: {
+                    show: false
+                }
+            },
+            grid: {
+                left: 100
+            },
+
+            series: series
+        };
+
+        leftChart.setOption(option);
+    }
+
+    function initDataArray(projectsLength) {
+        var dataArray = new Array();
+        for (let i = 0; i < projectsLength; i++) {
+            dataArray[i] = new Array();
+        }
+        return dataArray;
+    }
+
+    function pushDataArray(someData, someProject, month_name, data) {
+        const dataLength = data.length;
+        var sum = 0;
+        for (let i = 0; i < dataLength; i++) {
+            if (data[i].pj_name == someProject && data[i].month_name == month_name) {
+                sum += data[i].hour_time;
+            }
+        }
+        someData.push(sum);
+    }
+
+    function initSeries(series, projects, dataArray) {
+        const projectsLength = projects.length;
+        for (let i = 0; i < projectsLength; i++) {
+            const temp = {};
+            temp.name = projects[i];
+            temp.type = "bar";
+            temp.stack = "one";
+            temp.itemStyle = {
+                emphasis: {
+                    barBorderWidth: 1,
+                    shadowBlur: 10,
+                    shadowOffsetX: 0,
+                    shadowOffsetY: 0,
+                    shadowColor: 'rgba(0,0,0,0.5)'
+                }
+            };
+            temp.data = dataArray[i];
+
+            series.push(temp);
+        }
+    }
+
+    // 显示右边柱状图
+    function formatRightChartsData(data) {
+        const rightDataOfChart = getFormattedDataOfRightChart(data);
+        var option = {
+            title: {
+                text: "Pie1",
+                x: "left"
+            },
+            tooltip: {
+                trigger: 'item',
+                formatter: "{a} <br/>{b} : {c} ({d}%)"
+            },
+            legend: {
+                x: 'center',
+                data: projects
+            },
+            toolbox: {
+                show: true,
+
+                feature: {
+
+                    saveAsImage: {
+                        show: true,
+                        title: "save as image"
+                    }
+                }
+            },
+            calculable: true,
+            series: [{
+                name: 'area mode',
+                type: 'pie',
+                radius: [30, 110],
+                center: ['50%', '50%'],
+                roseType: 'area',
+                data: rightDataOfChart
+            }]
+        };
+        rightChart.setOption(option);
+    }
+
+    function getFormattedDataOfRightChart(data) {
+        const formattedDataOfRightChart = [];
+
+        const dataLength = data.length;
+        for (let i = 0; i < dataLength; i++) {
+            updateFormattedDataOfRightChart(formattedDataOfRightChart, data[i]);
+        }
+        return formattedDataOfRightChart;
+    }
+
+    function updateFormattedDataOfRightChart(formattedDataOfRightChart, oneData) {
+        var isExist = 0;
+        const formattedDataOfRightChartLength = formattedDataOfRightChart.length;
+        for (let i = 0; i < formattedDataOfRightChartLength; i++) {
+            if (formattedDataOfRightChart[i].name == oneData.pj_name) {
+                isExist = 1;
+                formattedDataOfRightChart[i].value += oneData.hour_time;
+            }
+        }
+        if (isExist == 0) {
+            formattedDataOfRightChart.push({
+                value: oneData.hour_time,
+                name: oneData.pj_name
+            });
+        }
+    }
+
+
+    // 显示第二个左边柱状图
+    function formatSecondLeftChartsData(data) {
+        $.get("/getswhphh", {year_id: getYear_name()}, (swhphh) => {
+            const monthnames = [];
+            const standard = [];
+            const actual = [];
+            const gap = [];
+
+            const swhphhLength = swhphh.length;
+            const dataLength = data.length; 
+            for (let i = 0; i < swhphhLength; i++) {
+                monthnames.push(swhphh[i].month_name);
+                standard.push(swhphh[i].swh);
+
+                let isActualMonthExist = 0;
+                for (let j = 0; j < dataLength; j++) {
+                    if (swhphh[i].month_name == data[j].month_name) {
+                        isActualMonthExist = 1;
+                        actual.push(data[j].totalhourtime);;
+                        gap.push(data[j].totalhourtime - swhphh[i].swh);
+                        break;
+                    }
+                }
+                if (isActualMonthExist == 0) {
+                    actual.push(0);
+                    gap.push(0 - swhphh[i].swh);
+                }
+            }
+
+            const formatResult = [];
+            formatResult.push(monthnames); 
+            formatResult.push(standard);
+            formatResult.push(actual);
+            formatResult.push(gap);
+
+            var option = {
+                title : {
+                    text: "Bar2",
+                    x: "left"
+                },
+                tooltip : {
+                    trigger: 'axis',
+                    axisPointer : {            // 坐标轴指示器，坐标轴触发有效
+                        type : 'shadow'        // 默认为直线，可选为：'line' | 'shadow'
+                    }
+                },
+                toolbox: {
+                    show: true,
+
+                    feature: {
+
+                        saveAsImage: {
+                            show: true,
+                            title: "save as image"
+                        }
+                    }
+                },
+                legend: {
+                    data: ['Standard', 'Actual', 'Gap']
+                },
+                grid: {
+                    left: '3%',
+                    right: '4%',
+                    bottom: '3%',
+                    containLabel: true
+                },
+                xAxis : [
+                    {
+                        type : 'value'
+                    }
+                ],
+                yAxis : [
+                    {
+                        type : 'category',
+                        axisTick : {show: false},
+                        data : formatResult[0]
+                    }
+                ],
+                series : [
+                    {
+                        name:'Standard',
+                        type:'bar',
+                        label: {
+                            normal: {
+                                show: true,
+                                position: 'inside'
+                            }
+                        },
+                        data: formatResult[1]
+                    },
+                    {
+                        name:'Actual',
+                        type:'bar',
+                        stack: '总量',
+                        label: {
+                            normal: {
+                                show: true
+                            }
+                        },
+                        data: formatResult[2]
+                    },
+                    {
+                        name:'Gap',
+                        type:'bar',
+                        stack: '总量',
+                        label: {
+                            normal: {
+                                show: true,
+                                position: 'left'
+                            }
+                        },
+                        data: formatResult[3]
+                    }
+                ]
+            };
+            secondLeftChart.setOption(option);
+        });
+    }
+
+
+    // 格式化第二个右边柱状图数据
+    function getFormattedDataOfRight2Chart(data) {
+        const dataLength = data.length;
+        const rolenames = [];
+        const roles_hours = [];
+        for (let i = 0; i < dataLength; i++) {
+            rolenames.push(data[i].role_name);
+            roles_hours.push({
+                value: data[i].totalhourtime,
+                name: data[i].role_name
+            });
+        }
+        const formatResult = [];
+        formatResult.push(rolenames);
+        formatResult.push(roles_hours);
+        return formatResult;
+    }
+
+    // 显示第二个右边柱状图
+    function formatSecondRightChartsData(data) {
+        const right2DataOfChart = getFormattedDataOfRight2Chart(data);
+        
+        var option = {
+            title : {
+                text: "Pie2",
+                x: "left"
+            },
+            tooltip : {
+                trigger: 'item',
+                formatter: "{a} <br/>{b} : {c} ({d}%)"
+            },
+            toolbox: {
+                show: true,
+
+                feature: {
+
+                    saveAsImage: {
+                        show: true,
+                        title: "save as image"
+                    }
+                }
+            },
+            legend: {
+                data: right2DataOfChart[0]
+            },
+            series : [
+                {
+                    name: 'role',
+                    type: 'pie',
+                    radius : '50%',
+                    center: ['50%', '50%'],
+                    data: right2DataOfChart[1],
+                    itemStyle: {
+                        emphasis: {
+                            shadowBlur: 10,
+                            shadowOffsetX: 0,
+                            shadowColor: 'rgba(0, 0, 0, 0.5)'
+                        }
+                    }
+                }
+            ]
+        };
+        secondRightChart.setOption(option);
+    }
+
+    function initChartsDom() {
+        leftChart = echarts.init(document.getElementById("left"));
+        rightChart = echarts.init(document.getElementById("right"));
+
+        secondLeftChart = echarts.init(document.getElementById("secondleft"));
+        secondRightChart = echarts.init(document.getElementById("secondright"));
+    }
+
+    function initCharts() {
+        const year_name = getYear_name();
+        
+        $.get("/chartsdata", {year_name: year_name}, (data) => {
+            formatLeftChartsData(data);
+            formatRightChartsData(data);
+        });
+
+        
+        $.get("/monthhourtime", {year_name: year_name}, (data) => {
+            formatSecondLeftChartsData(data);
+        });
+
+        
+        $.get("/rolehourtime", {year_name: year_name}, (data) => {
+            formatSecondRightChartsData(data);
+        });
+    }
+
+    function checkInputHour(value) {
+        if (isNaN(value) == true) {
+            return "illegal hour";
+        }
+    }
+
+    function formatter(value, row, index) {
+        if (value == undefined) {
+            return "";
+        } else {
+            return value;
+        }
+    }
+
+    // 获取当前年份
+    function getYear_name() {
+        return parseInt($("#year_name").val());
+    }
+
+    $(function () {
+        $("#modal3").on("hide.bs.modal", function () {
+            resetModal();
+        });
+
+        initChartsDom();
+        initCharts();
+
+        window.onresize = function () {
+            rightChart.resize();
+            leftChart.resize();
+            
+            secondLeftChart.resize();
+            secondRightChart.resize();
+        };
+
+        getRoles();
+        getProjects();
+
+        // 设定初始年份
+        const now_year = new Date().getFullYear();
+        $("#year_name").val(now_year);
+
+        // 设定模态框年份
+        $("#year_name_modal").val(now_year);
+
+        var otable = new tableinit();
+        otable.init();
+
+        $("#year_name").change(() => {
+            $("#year_name_modal").val(getYear_name);
+            $('#table').bootstrapTable('refresh');
+            refreshCharts();
+        });
+    });
+
+    var tableinit = function () {
+        var roleJsonString = '';
+        $.ajaxSetup({
+            async: false
+        });
+        $.get("/role", (roles) => {
+            roleJsonString += '{';
+            $.each(roles, (index, value) => {
+                roleJsonString += '"' + value.role_id + '":"' + value.role_name + '",';
+            });
+            roleJsonString = roleJsonString.substring(0, roleJsonString.length - 1);
+            roleJsonString += "}";
+        });
+        $.ajaxSetup({
+            async: true
+        });
+
+
+        var otableinit = new Object();
+        otableinit.init = function () {
+            $table.bootstrapTable({
+                toolbar: "#toolbar",
+                showRefresh: true,
+                showColumns: true,
+                search: true,
+                searchOnEnterKey: true,
+                url: "/gs",
+                method: 'get',
+                cache: false,
+                striped: true,
+                pagination: true,
+                pageNumber: 1,
+                pageSize: 10,
+                pageList: [5, 10, 20, 50],
+                queryParams: (params) => {
+                    var year_name = $("#year_name").val();
+                    year_name = parseInt(year_name);
+                    params.year_name = year_name;
+                    return params;
+                },
+                rowStyle: function (row, index) {
+                    if (index === 0 || index === 1 || index === 2) {
+                        return {
+                            css: {
+                                "background-color": "lightgrey"
+                            }
+                        };
+                    }
+                    return {};
+                },
+                columns: [{
+                        checkbox: true
+                    },
+                    {
+                        title: "Project",
+                        field: "pj_name"
+                    },
+
+                    {
+                        title: "Role",
+                        field: "january_role_id",
+                        editable: {
+                            type: 'select',
+                            title: 'Role',
+                            source: roleJsonString
+                        }
+
+                    }, {
+                        title: 'Jan',
+                        field: 'january_hour_time',
+
+                        formatter: formatter,
+                        editable: {
+                            type: 'text',
+                            title: 'January working hour',
+                            validate: checkInputHour
+                        }
+                    },
+
+
+                    {
+                        title: "Role",
+                        field: 'february_role_id',
+                        editable: {
+                            type: 'select',
+                            title: 'Role',
+                            source: roleJsonString
+                        }
+
+                    }, {
+                        title: 'Feb',
+                        field: 'february_hour_time',
+                        formatter: formatter,
+                        editable: {
+                            type: 'text',
+                            title: 'February working hour',
+                            validate: checkInputHour
+                        }
+                    },
+
+
+                    {
+                        title: "Role",
+                        field: 'march_role_id',
+                        editable: {
+                            type: 'select',
+                            title: 'Role',
+                            source: roleJsonString
+                        }
+                    }, {
+                        title: 'Mar',
+                        field: 'march_hour_time',
+                        formatter: formatter,
+                        editable: {
+                            type: 'text',
+                            title: 'March working hour',
+                            validate: checkInputHour
+                        }
+                    },
+
+
+                    {
+                        title: "Role",
+                        field: 'april_role_id',
+                        editable: {
+                            type: 'select',
+                            title: 'Role',
+                            source: roleJsonString
+                        }
+                    }, {
+                        title: 'Apr',
+                        field: 'april_hour_time',
+                        formatter: formatter,
+                        editable: {
+                            type: 'text',
+                            title: 'April working hour',
+                            validate: checkInputHour
+                        }
+                    },
+
+
+                    {
+                        title: "Role",
+                        field: 'may_role_id',
+                        editable: {
+                            type: 'select',
+                            title: 'Role',
+                            source: roleJsonString
+                        }
+                    }, {
+                        title: 'May',
+                        field: 'may_hour_time',
+                        formatter: formatter,
+                        editable: {
+                            type: 'text',
+                            title: 'May working hour',
+                            validate: checkInputHour
+                        }
+                    },
+
+
+                    {
+                        title: "Role",
+                        field: 'june_role_id',
+                        editable: {
+                            type: 'select',
+                            title: 'Role',
+                            source: roleJsonString
+                        }
+                    }, {
+                        title: 'Jun',
+                        field: 'june_hour_time',
+                        formatter: formatter,
+                        editable: {
+                            type: 'text',
+                            title: 'June working hour',
+                            validate: checkInputHour
+                        }
+                    },
+
+
+                    {
+                        title: "Role",
+                        field: 'july_role_id',
+                        editable: {
+                            type: 'select',
+                            title: 'Role',
+                            source: roleJsonString
+                        }
+                    }, {
+                        title: 'Jul',
+                        field: 'july_hour_time',
+                        formatter: formatter,
+                        editable: {
+                            type: 'text',
+                            title: 'July working hour',
+                            validate: checkInputHour
+                        }
+                    },
+
+
+                    {
+                        title: "Role",
+                        field: 'august_role_id',
+                        editable: {
+                            type: 'select',
+                            title: 'Role',
+                            source: roleJsonString
+                        }
+                    }, {
+                        title: 'Aug',
+                        field: 'august_hour_time',
+                        formatter: formatter,
+                        editable: {
+                            type: 'text',
+                            title: 'August working hour',
+                            validate: checkInputHour
+                        }
+                    },
+
+
+                    {
+                        title: "Role",
+                        field: 'september_role_id',
+                        editable: {
+                            type: 'select',
+                            title: 'Role',
+                            source: roleJsonString
+                        }
+                    }, {
+                        title: 'Sep',
+                        field: 'september_hour_time',
+                        formatter: formatter,
+                        editable: {
+                            type: 'text',
+                            title: 'September working hour',
+                            validate: checkInputHour
+                        }
+                    },
+
+
+                    {
+                        title: "Role",
+                        field: 'october_role_id',
+                        editable: {
+                            type: 'select',
+                            title: 'Role',
+                            source: roleJsonString
+                        }
+                    }, {
+                        title: 'Oct',
+                        field: 'october_hour_time',
+                        formatter: formatter,
+                        editable: {
+                            type: 'text',
+                            title: 'October working hour',
+                            validate: checkInputHour
+                        }
+                    },
+
+
+                    {
+                        title: "Role",
+                        field: 'november_role_id',
+                        editable: {
+                            type: 'select',
+                            title: 'Role',
+                            source: roleJsonString
+                        }
+                    }, {
+                        title: 'Nov',
+                        field: 'november_hour_time',
+                        formatter: formatter,
+                        editable: {
+                            type: 'text',
+                            title: 'November working hour',
+                            validate: checkInputHour
+                        }
+                    },
+
+
+                    {
+                        title: "Role",
+                        field: 'december_role_id',
+                        editable: {
+                            type: 'select',
+                            title: 'Role',
+                            source: roleJsonString
+                        }
+                    }, {
+                        title: 'Dec',
+                        field: 'december_hour_time',
+                        formatter: formatter,
+                        editable: {
+                            type: 'text',
+                            title: 'December working hour',
+                            validate: checkInputHour
+                        }
+                    }
+                ],
+                onEditableSave: (field, row, oldValue, $el) => {
+                    if (oldValue == undefined) {
+                        $('#table').bootstrapTable('refresh');
+                    } else {
+                        let checkRes = checkColumn(field, row);
+                        if (checkRes == false) {
+                            $('#table').bootstrapTable('refresh');
+                        } else {
+                            var jsondata = {};
+                            // 更新 Private leave\Training\Administration hour_time
+                            if (row.pj_name == "Private leave" || row.pj_name == "Training" || row.pj_name ==
+                                "Administration") {
+                                jsondata.np_name = row.pj_name;
+                                jsondata.year_name = getYear_name();
+                                jsondata.month_name = getMonthnameFromMonthColumn(field);
+                                jsondata.hour_time = row[field];
+
+                                $.ajax({
+                                    type: "post",
+                                    url: "/updateusernp",
+                                    contentType: "application/json",
+                                    data: JSON.stringify(jsondata),
+                                    dataType: 'JSON',
+                                    success: function (res) {
+                                        if (res.result == 1) {
+                                        } else {
+                                            window.alert(
+                                                "Update failure, please try it again later."
+                                            );
+                                            $('#table').bootstrapTable('refresh');
+                                        }
+                                        
+                                    }
+                                });
+                            }
+                            // 更新 项目 hour_time 或者 role
+                            else {
+                                jsondata.pj_name = row.pj_name;
+                                // 如果更新的是 role
+                                if (field.indexOf("_role_") != -1) {
+                                    jsondata.year_name = getYear_name();
+                                    const result_monthName_rightField =
+                                        getMonthnameAndRightHourtimeFromMonthColumnRoleId(field);
+                                    jsondata.month_name = result_monthName_rightField[0];
+                                    jsondata.hour_time = row[result_monthName_rightField[1]];
+                                    jsondata.old_role_id = parseInt(oldValue);
+                                    jsondata.role_id = parseInt(row[field]);
+
+                                    $.ajax({
+                                        type: "post",
+                                        url: "/updatehybridroleid",
+                                        contentType: "application/json",
+                                        data: JSON.stringify(jsondata),
+                                        dataType: 'JSON',
+                                        success: function (res) {
+                                            if (res.result == 1) {
+                                                refreshCharts();
+                                            } else {
+                                                window.alert("Update failure, please try it again later.");
+                                            }
+                                            $('#table').bootstrapTable('refresh');
+                                        }
+                                    });
+                                }
+                                // 如果更新的是 hour_time
+                                else {
+                                    jsondata.year_name = getYear_name();
+                                    const result_monthName_leftField =
+                                        getMonthnameAndLeftRoleIdFromMonthColumnRoleId(field);
+                                    jsondata.month_name = result_monthName_leftField[0];
+                                    jsondata.role_id = row[result_monthName_leftField[1]];
+                                    jsondata.old_hour_time = parseFloat(oldValue);
+                                    jsondata.hour_time = parseFloat(row[field]);
+
+                                    $.ajax({
+                                        type: "post",
+                                        url: "/updatehybridhourtime",
+                                        contentType: "application/json",
+                                        data: JSON.stringify(jsondata),
+                                        dataType: 'JSON',
+                                        success: function (res) {
+                                            if (res.result == 1) {
+                                                refreshCharts();
+                                            } else {
+                                                window.alert("Update failure, please try it again later.");
+                                            }
+                                            $('#table').bootstrapTable('refresh');
+                                        }
+                                    });
+                                }
+                            }
+                            //window.alert(JSON.stringify(jsondata));
+                        }
+                    }
+                },
+                
+                showExport: true,
+                exportDataType: "all",
+                exportOptions: {  
+                    ignoreColumn: [0],            //忽略某一列的索引  
+                    fileName: 'EffordRecord',              //文件名称设置  
+                    worksheetName: 'sheet1',          //表格工作区名称
+                    styles: ['background-color', 'color', 'font-size', 'font-weight']
+                }
+            
+            });
+        };
+        return otableinit;
+    };
+
+    function getRoles() {
+        $.get("/role", (roles) => {
+            $("#role_id").empty();
+            $("#role_id").append("<option value='0'></option>");
+            $.each(roles, (index, value) => {
+                const option = "<option value=" + value.role_id + ">" + value.role_name + "</option>";
+                $("#role_id").append(option);
+            });
+        })
+    }
+
+    function getProjects() {
+        $.get("/getprojects", (projects) => {
+            $("#pj_id").empty();
+            $("#pj_id").append("<option value='0'></option>");
+            $.each(projects, (index, value) => {
+                const option = "<option value=" + value.pj_id + ">" + value.pj_name + "</option>";
+                $("#pj_id").append(option);
+            });
+        })
+    }
+
+    function validate() {
+        if ($("#pj_id").val() == "") {
+            window.alert("Please input project name!");
+            return false;
+        }
+        if ($("#role_id").val() == "0") {
+            window.alert("Please select one role!");
+            return false;
+        }
+        if ($("#year_name_modal").val() == "") {
+            window.alert("Please select one year");
+            return false;
+        }
+        if ($("#month_name").val() == "") {
+            window.alert("Please select one month!");
+            return false;
+        }
+        if ($("#hour_time").val() == "") {
+            windoiw.alert("Please input hour!");
+            return false;
+        }
+        if (isNaN($("#hour_time").val()) == true) {
+            window.alert("Please input illegal hour!");
+            return false;
+        }
+        return true;
+    }
+
+
+
+    function addNewWorkingInformation() {
+        const validateRes = validate();
+        if (validateRes == true) {
+            $.post("/addworkinfo", {
+                pj_id: $("#pj_id").val(),
+                role_id: parseInt($("#role_id").val()),
+                year_name: parseInt($("#year_name_modal").val()),
+                month_name: $("#month_name").val(),
+                hour_time: parseFloat($("#hour_time").val())
+            }, (json) => {
+                // 项目已存在
+                if (json.result == 2) {
+                    window.alert("This project and month and role have existed.You can edit it in the table.");
+                } else {
+                    $('#modal3').modal('hide');
+                    if (json.result == 1) {
+                        $('#table').bootstrapTable('refresh');
+                        refreshCharts();
+                    } else {
+                        $("#failure").modal("show");
+                    }
+                    
+                }
+            });
+        }
+    }
+
+    function deleteWorkingInformation() {
+        const year_name = parseInt($("#year_name").val());
+        const rows = $table.bootstrapTable("getSelections");
+        if (rows.length == 0) {
+            window.alert("No row is selected.");
+        } else {
+            const workinfos = rows.map((row) => {
+                return getOneRowWorkinfo(row, year_name);
+            });
+
+            $.ajax({
+                type: "POST",
+                contentType: "application/json", //内容类型
+                dataType: "json",
+                url: "/deleteworkinfo",
+                data: JSON.stringify(workinfos),
+                success: function (json) {
+                    $('#deletemodal').modal('hide');
+                    if (json.result == 1) {
+                        $('#table').bootstrapTable('refresh');
+                        refreshCharts();
+                    } else {
+                        window.alert("Delete failure, please try again later.");
+                    }
+                }
+            });
+        }
+    }
+</script>
+
+</html>
